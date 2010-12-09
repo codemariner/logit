@@ -43,7 +43,17 @@ this will add something like 'Publisher 1234' to log entries.
 
 this will rotate logs up to a total of 5 files with max size of 102400
 bytes.
+
+==== Flushing each message to the log file immediately
   
+  logs_to :publisher, :flush_mode => :immediate
+
+The default behavior is to use the default file buffering.  Turning this
+on will cause each message to be written to the log file immediately.
+Alternatively, you can control this programmatically like so:
+
+  logger.info("my message")
+  logger.flush()
 
 === Running in Rails
 
@@ -77,6 +87,12 @@ environment to the log file name.  For example:
 
 * Allow users to pass in a proc or a name of a method to call to handle formatting of log entries.
 * Add some tests?
+
+= Release Notes
+
+[1.0.2]
+ * Added :flush_mode option.  Set this to <tt>:immediate</tt> if you want each message flushed to the log file immediately.
+ * Added :stdout option.  Set this to <tt>true</tt> if you want logs printed to stdout as well.
 
 
 = Credits

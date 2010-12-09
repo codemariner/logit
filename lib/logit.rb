@@ -4,7 +4,7 @@ module Logit
   end
 
   module ClassMethods
-    DEFAULT_OPTS = {:write_mode => 'a'}
+    DEFAULT_OPTS = {:write_mode => 'a', :flush_mode => :default, :stdout => false}
 
     begin
       Module.const_get(:Logger)
@@ -17,6 +17,8 @@ module Logit
     # * +:shift_age+ - Number of old logs to keep or frequency of rotation.
     # * +:shift_size+ - Maximum logfile size that only applies when <tt>:shift_age</tt> is a number.
     # * +:progname+ - Logging program name.  The <tt>:progname</tt> value is used in the default logging format if defined.
+    # * +:flush_mode+ - One of <tt>:immediate</tt> or <tt>:default</tt>.  <tt>:immediate</tt> will cause a write to the log file for each message logged.  The default behavior is to use default file buffering.
+    # * +:stdout+ - If set to <tt>true</tt>, this will cause logs to be printed to stdout <b>in addition to</b> the log file.
     #
     # === Examples
     # 
@@ -114,8 +116,11 @@ module Logit
   #
   class Logger < Logger
   
-    def initialize(log_path, opts = {:write_mode => 'a'})
-      @f = File.open(log_path, 'a')
+    DEFAULT_OPTS = {:write_mode => 'a', :flush_mode => :default}
+
+    def initialize(log_path, opts = DEFAULT_OPTS)
+      @opts = DEFAULT_OPTS.merge(opts)
+      @f = File.open(log_path, @opts[:write_mode])
       super @f
     end
   
@@ -123,12 +128,21 @@ module Logit
   
       name = (progname) ? " [#{progname}]" : ""
   
-      "#{timestamp.strftime('%d-%m-%Y %H:%M:%S')} #{severity.ljust(6)}#{name}: #{msg}\n"
+      message = "#{timestamp.strftime('%d-%m-%Y %H:%M:%S')} #{severity.ljust(6)}#{name}: #{msg}\n"
+      puts message if @opts[:stdout]
+      message
     end
-  
+
+    def add(severity, message = nil, progname = nil, &block)
+      super.add(severity, message, progname, &block)
+      flush() if @opts[:flush_mode] == :immediate
+    end
+
+    # Causes any pending writes to be flushed to disk
     def flush()
       @f.flush()
     end
+
   end
 
 end
