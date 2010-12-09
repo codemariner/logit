@@ -21,9 +21,43 @@ For example:
     end
   end
 
-If in a Rails environment, the call to <tt>logs_to</tt> will add a
-<tt>logger</tt> method that can be used to append log messages to a
-{RAILS_ROOT}/log/publisher_{Rails.env}.log file.
+This will write logs to a publisher.log file in the current directory.
+
+=== More config options
+
+==== Writing to a specific directory
+
+  logs_to '/var/log/publishing/publisher.log'
+
+==== Adding a progname to log entries
+
+  logs_to :publisher, :progname => "Publisher #{Process.pid}"
+
+this results in log entries like:
+
+[TODO] put example here
+
+==== Configuring log rotation
+
+  logs_to :publisher, :shift_age => 5, :shift_size => 102400
+
+this will rotate logs up to a total of 5 files with max size of 102400
+bytes.
+  
+
+=== Running in Rails
+
+LogIt automatically detects if you're running in a Rails environment.  If
+so, it will automatically write to the Rails log directory and appends the
+environment to the log file name.  For example:
+
+  RAILS_ROOT/log/publisher_development.log
+
+
+== TODO
+
+ * Allow users to pass in a proc or a name of a method to call to handle formatting of log entries.
+ * Add some tests?
 
 
 = Credits
