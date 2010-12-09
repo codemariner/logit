@@ -77,6 +77,7 @@ module Logit
       unless (path =~ /\.log$/)
         path << ".log"
       end
+      path
     end
 
     def logit_strip_dot_log(name)
