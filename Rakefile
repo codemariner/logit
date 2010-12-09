@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('logit', '1.0.1') do |p|
+Echoe.new('logit', '1.0.2') do |p|
     p.description       = 'Easily add custom logging abilities to your Ruby or Rails application.'
     p.url               = 'http://github.com/codemariner/logit'
     p.author            = 'Scott Sayles'
