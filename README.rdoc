@@ -1,0 +1,27 @@
+= LogIt
+LogIt makes it easy to add custom logging to your Ruby or Rails
+application and has sensible formatting out of the box.
+
+
+= Usage
+
+=== Minimal configuration
+
+LogIt adds a class method to any including class to setup a logger method.
+For example:
+
+  class Publisher
+    include Logit
+    
+    logs_to :publisher
+
+    def publish
+      logger.info("doing publish")
+      # do stuff...
+    end
+  end
+
+If in a Rails environment, the call to <tt>logs_to</tt> will add a
+<tt>logger</tt> method that can be used to append log messages to a
+{RAILS_ROOT}/log/publisher_{Rails.env}.log file.
+
