@@ -35,7 +35,7 @@ This will write logs to a publisher.log file in the current directory.
 
   logs_to :publisher, :progname => "Publisher #{Process.pid}"
 
-this will add 'Publisher 1234' to log entries.
+this will add something like 'Publisher 1234' to log entries.
 
 ==== Configuring log rotation
 
@@ -48,7 +48,7 @@ bytes.
 === Running in Rails
 
 LogIt automatically detects if you're running in a Rails environment.  If
-so, it will automatically write to the Rails log directory and appends the
+so, it will write to the Rails log directory and appends the
 environment to the log file name.  For example:
 
   RAILS_ROOT/log/publisher_development.log
