@@ -55,13 +55,22 @@ Alternatively, you can control this programmatically like so:
   logger.info("my message")
   logger.flush()
 
-=== Running in Rails
+==== Also print to stdout
+  
+  logs_to :publisher, :stdout => true
+
+This will print log messages to stdout in addition to writing them to the
+log file.
+
+
+= Rails
 
 LogIt automatically detects if you're running in a Rails environment.  If
 so, it will write to the Rails log directory and appends the
 environment to the log file name.  For example:
 
   RAILS_ROOT/log/publisher_development.log
+
 
 = Example log
 
@@ -72,21 +81,18 @@ environment to the log file name.  For example:
  09-12-2010 10:28:32 INFO   [publisher 4634]: Publishing files to endpoint.
  09-12-2010 10:28:32 WARN   [publisher 4634]: No files available to publish.
 
-= Installation
 
+= Installation
 == As a Gem
 
  $ gem install logit
+
 
 == As a Rails plugin
 
  $ script/plugin install git://github.com/ssayles/logit.git
 
 
-= TODO
-
-* Allow users to pass in a proc or a name of a method to call to handle formatting of log entries.
-* Add some tests?
 
 = Release Notes
 
@@ -94,6 +100,11 @@ environment to the log file name.  For example:
  * Added :flush_mode option.  Set this to <tt>:immediate</tt> if you want each message flushed to the log file immediately.
  * Added :stdout option.  Set this to <tt>true</tt> if you want logs printed to stdout as well.
 
+
+= TODO
+
+* Allow users to pass in a proc or a name of a method to call to handle formatting of log entries.
+* Add some tests?
 
 = Credits
 
