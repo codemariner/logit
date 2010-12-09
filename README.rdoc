@@ -10,6 +10,8 @@ application and has sensible formatting out of the box.
 LogIt adds a class method to any including class to setup a logger method.
 For example:
 
+  require 'logit'
+
   class Publisher
     include Logit
     
@@ -33,9 +35,7 @@ This will write logs to a publisher.log file in the current directory.
 
   logs_to :publisher, :progname => "Publisher #{Process.pid}"
 
-this results in log entries like:
-
-[TODO] put example here
+this will add 'Publisher 1234' to log entries.
 
 ==== Configuring log rotation
 
@@ -53,11 +53,30 @@ environment to the log file name.  For example:
 
   RAILS_ROOT/log/publisher_development.log
 
+= Example log
 
-== TODO
+ 09-12-2010 10:27:10 INFO   [publisher 4607]: Publishing files to endpoint.
+ 09-12-2010 10:27:15 INFO   [publisher 4607]: Publishing completed.
+ 09-12-2010 10:27:56 INFO   [publisher 4621]: Publishing files to endpoint.
+ 09-12-2010 10:28:01 ERROR  [publisher 4621]: An exception occurred while publishing files: Connection reset by peer.
+ 09-12-2010 10:28:32 INFO   [publisher 4634]: Publishing files to endpoint.
+ 09-12-2010 10:28:32 WARN   [publisher 4634]: No files available to publish.
 
- * Allow users to pass in a proc or a name of a method to call to handle formatting of log entries.
- * Add some tests?
+= Installation
+
+== As a Gem
+
+ $ gem install logit --source http://rubygems.org
+
+== As a Rails plugin
+
+ $ script/plugin install git://github.com/ssayles/logit.git
+
+
+= TODO
+
+* Allow users to pass in a proc or a name of a method to call to handle formatting of log entries.
+* Add some tests?
 
 
 = Credits
