@@ -25,3 +25,11 @@ If in a Rails environment, the call to <tt>logs_to</tt> will add a
 <tt>logger</tt> method that can be used to append log messages to a
 {RAILS_ROOT}/log/publisher_{Rails.env}.log file.
 
+
+= Credits
+
+LogIt is written and maintained by {Scott Sayles}[mailto:ssayles@users.sourceforge.net].  
+
+= Copyright
+
+Copyright (c) 2010 Scott Sayles. See LICENSE for details.
