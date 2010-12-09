@@ -134,7 +134,7 @@ module Logit
     end
 
     def add(severity, message = nil, progname = nil, &block)
-      super.add(severity, message, progname, &block)
+      super(severity, message, progname, &block)
       flush() if @opts[:flush_mode] == :immediate
     end
 
