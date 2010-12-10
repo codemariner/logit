@@ -128,7 +128,7 @@ module Logit
   
       name = (progname) ? " [#{progname}]" : ""
   
-      message = "#{timestamp.strftime('%d-%m-%Y %H:%M:%S')} #{severity.ljust(6)}#{name}: #{msg}\n"
+      message = "#{timestamp.strftime('%m-%d-%Y %H:%M:%S')} #{severity.ljust(6)}#{name}: #{msg}\n"
       puts message if @opts[:stdout]
       message
     end
