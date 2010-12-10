@@ -96,6 +96,9 @@ environment to the log file name.  For example:
 
 = Release Notes
 
+[1.0.3]
+ * Changed default date format to month-day-year.
+
 [1.0.2]
  * Added :flush_mode option.  Set this to <tt>:immediate</tt> if you want each message flushed to the log file immediately.
  * Added :stdout option.  Set this to <tt>true</tt> if you want logs printed to stdout as well.
