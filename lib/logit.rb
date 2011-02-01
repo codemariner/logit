@@ -1,14 +1,14 @@
 module Logit
+
+  DEFAULT_OPTS = {:write_mode => 'a', :flush_mode => :default, :log_method => :logger, :stdout => false}
+
   def self.included(base)
     base.extend ClassMethods
   end
 
   module ClassMethods
-    DEFAULT_OPTS = {:write_mode => 'a', :flush_mode => :default, :stdout => false}
 
-    begin
-      Module.const_get(:Logger)
-    rescue NameError
+    unless Object.const_defined?(:Logger)
       require 'logger'
     end
 
@@ -19,6 +19,7 @@ module Logit
     # * +:progname+ - Logging program name.  The <tt>:progname</tt> value is used in the default logging format if defined.
     # * +:flush_mode+ - One of <tt>:immediate</tt> or <tt>:default</tt>.  <tt>:immediate</tt> will cause a write to the log file for each message logged.  The default behavior is to use default file buffering.
     # * +:stdout+ - If set to <tt>true</tt>, this will cause logs to be printed to stdout <b>in addition to</b> the log file.
+    # * +:log_method+ - The name of the instance method to define to access the logger instance.  Defaults to <tt>:logger</tt>.
     #
     # === Examples
     # 
@@ -42,11 +43,22 @@ module Logit
     #      logger.info("doing something")
     #    end
     #  end
+    #
+    #  class Publisher3
+    #    include Logit
+    #
+    #    logs_to :publisher, :log_method => :pub_log
+    #
+    #    def do_it
+    #      pub_log.info("doing something")
+    #    end
+    #  end
     #  
     def logs_to(name, opts={})
       opts = DEFAULT_OPTS.merge(opts)
       path = logit_log_name(name, opts)
-      self.send :define_method, :logger do
+
+      self.class.send :define_method, :logit_logger do
         unless @logger
           @logger =  Logit::Logger.new(path, opts)
           if opts[:progname]
@@ -54,6 +66,10 @@ module Logit
           end
         end
         @logger
+      end
+
+      self.send :define_method, opts[:log_method] do
+        self.class.send :logit_logger
       end
     end
 
@@ -112,20 +128,18 @@ module Logit
   #
   # when running under Rails.
   #
-  # You can flush the log by calling logger.flush().
-  #
   class Logger < Logger
   
-    DEFAULT_OPTS = {:write_mode => 'a', :flush_mode => :default}
-
     def initialize(log_path, opts = DEFAULT_OPTS)
       @opts = DEFAULT_OPTS.merge(opts)
-      @f = File.open(log_path, @opts[:write_mode])
-      super @f
+      f = File.open(log_path, @opts[:write_mode])
+      if (opts[:flush_mode] == :immediate)
+        f.sync = true
+      end
+      super f
     end
   
     def format_message(severity, timestamp, progname, msg)
-  
       name = (progname) ? " [#{progname}]" : ""
   
       message = "#{timestamp.strftime('%m-%d-%Y %H:%M:%S')} #{severity.ljust(6)}#{name}: #{msg}\n"
@@ -135,14 +149,26 @@ module Logit
 
     def add(severity, message = nil, progname = nil, &block)
       super(severity, message, progname, &block)
-      flush() if @opts[:flush_mode] == :immediate
     end
 
-    # Causes any pending writes to be flushed to disk
-    def flush()
-      @f.flush()
+    # flushes any buffered content to the log
+    def flush
+      # get a handle to the actual file and then synchronize on the mutex
+      # that LogDevice is using (so we don't have the file closed or
+      # swapped out from under us)
+      if @logdev 
+        mutex = @logdev.instance_variable_get('@mutex')
+        if (mutex)
+          mutex.synchronize do 
+            dev = @logdev.dev
+            if (dev and !dev.closed?)
+              dev.flush()
+            end
+          end
+        end
+      end
+      true
     end
-
   end
 
 end

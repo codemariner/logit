@@ -31,6 +31,15 @@ This will write logs to a publisher.log file in the current directory.
 
   logs_to '/var/log/publishing/publisher.log'
 
+==== Using a different log method name
+
+  logs_to :publisher, :log_method => :pub_log
+
+  def publish
+    pub_log.info("doing publish")
+    # do stuff...
+  end
+
 ==== Adding a progname to log entries
 
   logs_to :publisher, :progname => "Publisher #{Process.pid}"
@@ -50,10 +59,6 @@ bytes.
 
 The default behavior is to use the default file buffering.  Turning this
 on will cause each message to be written to the log file immediately.
-Alternatively, you can control this programmatically like so:
-
-  logger.info("my message")
-  logger.flush()
 
 ==== Also print to stdout
   
@@ -90,11 +95,16 @@ environment to the log file name.  For example:
 
 == As a Rails plugin
 
- $ script/plugin install git://github.com/ssayles/logit.git
+ $ script/plugin install git://github.com/codemariner/logit.git
 
 
 
 = Release Notes
+
+[1.0.4]
+ * Removed reference to file handler.  Allowing Logger to manage this entirely.
+ * Added option :log_method that specifies what the name of the log method should be.
+ * Deprecated Logit::Logger#flush as I can't reliabely garuntee that we'll have a proper handle to the underlying file.
 
 [1.0.3]
  * Changed default date format to month-day-year.
