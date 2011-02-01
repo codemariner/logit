@@ -104,7 +104,8 @@ environment to the log file name.  For example:
 [1.0.4]
  * Removed reference to file handler.  Allowing Logger to manage this entirely.
  * Added option :log_method that specifies what the name of the log method should be.
- * Deprecated Logit::Logger#flush as I can't reliabely garuntee that we'll have a proper handle to the underlying file.
+ * Reimplemented flush to grab the underlying LogDevice file.
+ * Assigning Logger instance to class level variable.
 
 [1.0.3]
  * Changed default date format to month-day-year.
